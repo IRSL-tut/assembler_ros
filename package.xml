@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>assembler_ros</name>
+  <version>0.0.0</version>
+  <description>The package for using RobotAssembler as a ROS2 node</description>
+  <maintainer email="kakiuchi.yohei.sw@tut.jp">Yohei Kakiuchi</maintainer>
+  <license>MIT</license>
+  <author email="kakiuchi.yohei.sw@tut.jp">Yohei Kakiuchi</author>
+  <!--url type="website"></url-->
+  <!--url type="repository">https://github.com/</url-->
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>choreonoid</depend>
+  <depend>rclcpp</depend>
+  <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>tf2_ros</depend>
+  <depend>tf2_eigen</depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
