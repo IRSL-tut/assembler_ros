@@ -1,7 +1,8 @@
-#ifndef __CHOREONOID_ASSEMBLER_ROS_MANAGER_PLUGIN_H__
-#define __CHOREONOID_ASSEMBLER_ROS_MANAGER_PLUGIN_H__
+#ifndef __CNOID_ASSEMBLER_ROS_MANAGER_H__
+#define __CNOID_ASSEMBLER_ROS_MANAGER_H__
 
 #include <string>
+#include <cnoid/EigenTypes>
 
 namespace cnoid
 {
@@ -16,10 +17,15 @@ public:
 
     void startROSNode();
     void setNodeName(const std::string &_name);
+
+    Isometry3& offset();
+    const Isometry3& offset() const;
+    void setOffset(Isometry3 &_T);
 private:
+    Isometry3 T_;
     class Impl;
     Impl *impl;
 };
 
 }
-#endif // __CHOREONOID_ASSEMBLER_ROS2PLUGIN_H__
+#endif // __CHOREONOID_ASSEMBLER_ROS_MANAGER_H__

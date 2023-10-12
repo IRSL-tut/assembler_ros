@@ -17,12 +17,21 @@ public:
     //
     AssemblerROSManager *ros_manager;
     void onSigOptionsParsed(po::variables_map& _v);
+    void startROSNode();
 };
 void AssemblerROSPlugin::Impl::onSigOptionsParsed(po::variables_map& _v)
 {
+    // assembler-ros-param
+    ros_manager = AssemblerROSManager::instance();
     if(_v.count("assembler-node")) {
         std::string _name = _v["assembler-node"].as<std::string>();
         ros_manager->setNodeName(_name);
+    }
+}
+void AssemblerROSPlugin::Impl::startROSNode()
+{
+    if (!!ros_manager) {
+        ros_manager->startROSNode();
     }
 }
 ////
@@ -42,7 +51,7 @@ bool AssemblerROSPlugin::initialize()
     om.sigOptionsParsed(1).connect(
         [&](po::variables_map& _v) { impl->onSigOptionsParsed(_v); } );
 
-    App::sigExecutionStarted().connect([this](){  this->impl->ros_manager->startROSNode();  });
+    App::sigExecutionStarted().connect([this](){  this->impl->startROSNode(); });
 
     return true;
 }
