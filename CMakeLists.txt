@@ -38,10 +38,12 @@ ament_target_dependencies(${target} PUBLIC
   )
 #Choreonoid::CnoidBodyPlugin
 #Choreonoid::RobotAssemblerPlugin
+#Choreonoid::RobotAssembler
+#Choreonoid::CnoidRobotAssemblerPlugin
 target_link_libraries(
   ${target} PUBLIC
-  /home/irsl/sandbox/choreonoid_ws/install/lib/choreonoid-2.0/libCnoidRobotAssemblerPlugin.so
-  /home/irsl/sandbox/choreonoid_ws/install/lib/libRobotAssembler.so
+  ${CHOREONOID_PLUGIN_DIR}/libCnoidRobotAssemblerPlugin.so
+  ${CHOREONOID_LIB_DIR}/libRobotAssembler.so
   )
 
 #install(
