@@ -2,7 +2,7 @@
 
 */
 
-#include "ScenePublisherItem.h"
+#include "ScenePublisher.h"
 #include <cnoid/Archive>
 #include <cnoid/ItemManager>
 #include <cnoid/PutPropertyFunction>
@@ -94,18 +94,18 @@ struct ThreadInfo
     }
 };
 
-class ScenePublisherItem::Impl : public rclcpp::Node
+class ScenePublisher::Impl : public rclcpp::Node
 {
 public:
-    ScenePublisherItem *self;
+    ScenePublisher *self;
 
     double publishingRate;
     int compressionLevel;
     double fov_;
     long counter;
 
-    Impl(ScenePublisherItem *self);
-    Impl(ScenePublisherItem *self, const Impl &org);
+    Impl(ScenePublisher *self);
+    Impl(ScenePublisher *self, const Impl &org);
     ~Impl();
 
     void initialize();
@@ -336,7 +336,7 @@ public:
         ThreadInfo *h = new ThreadInfo();
         h->left  =  left->getImage();
         h->right = right->getImage();
-        h->thread = new std::thread(std::bind(&ScenePublisherItem::Impl::publish_, this, _1), h);
+        h->thread = new std::thread(std::bind(&ScenePublisher::Impl::publish_, this, _1), h);
         h->id = counter;
         thread_list.push_back(h);
     }
@@ -365,19 +365,13 @@ public:
 
 }  // namespace cnoid
 
-void ScenePublisherItem::initializeClass(ExtensionManager *ext)
-{
-    ext->itemManager().registerClass<ScenePublisherItem>(N_("ScenePublisherItem"));
-    ext->itemManager().addCreationPanel<ScenePublisherItem>();
-}
+//void ScenePublisher::initializeClass(ExtensionManager *ext)
+//{
+//    ext->itemManager().registerClass<ScenePublisher>(N_("ScenePublisher"));
+//    ext->itemManager().addCreationPanel<ScenePublisher>();
+//}
 
-ScenePublisherItem::ScenePublisherItem()
-{
-    std::cerr << "ScenePublisherItem : created" << std::endl;
-    impl = new Impl(this);
-}
-
-ScenePublisherItem::Impl::Impl(ScenePublisherItem *self)
+ScenePublisher::Impl::Impl(ScenePublisher *self)
     : rclcpp::Node("scene_publisher", rclcpp::NodeOptions())
     , self(self),  tm(), ros_clock(RCL_ROS_TIME)
 {
@@ -389,14 +383,7 @@ ScenePublisherItem::Impl::Impl(ScenePublisherItem *self)
     initialize();
 }
 
-ScenePublisherItem::ScenePublisherItem(const ScenePublisherItem &org)
-    : Item(org)
-{
-    std::cerr << "ScenePublisherItem : copied" << std::endl;
-    impl = new Impl(this, *org.impl);
-}
-
-ScenePublisherItem::Impl::Impl(ScenePublisherItem *self, const Impl &org)
+ScenePublisher::Impl::Impl(ScenePublisher *self, const Impl &org)
     : rclcpp::Node("scene_publisher", rclcpp::NodeOptions())
     , self(self)
 {
@@ -405,7 +392,7 @@ ScenePublisherItem::Impl::Impl(ScenePublisherItem *self, const Impl &org)
     initialize();
 }
 
-void ScenePublisherItem::Impl::initialize()
+void ScenePublisher::Impl::initialize()
 {
     fov_ = FOV;
     //pub = image_transport::create_publisher(this, "scene/image");
@@ -435,21 +422,46 @@ void ScenePublisherItem::Impl::initialize()
     tm.start(interval_ms);
 }
 
-ScenePublisherItem::~ScenePublisherItem()
+ScenePublisher::Impl::~Impl()
+{
+}
+
+bool ScenePublisher::initializeClass()
+{
+    return true;
+}
+
+ScenePublisher* ScenePublisher::instance()
+{
+    static ScenePublisher *_instance = new ScenePublisher();
+    return _instance;
+}
+
+ScenePublisher::ScenePublisher()
+{
+    std::cerr << "ScenePublisher : created" << std::endl;
+    impl = new Impl(this);
+}
+#if 0
+ScenePublisher::ScenePublisher(const ScenePublisher &org)
+    : Item(org)
+{
+    std::cerr << "ScenePublisher : copied" << std::endl;
+    impl = new Impl(this, *org.impl);
+}
+#endif
+ScenePublisher::~ScenePublisher()
 {
     delete impl;
 }
 
-ScenePublisherItem::Impl::~Impl()
+#if 0
+Item *ScenePublisher::doDuplicate() const
 {
+    return new ScenePublisher(*this);
 }
 
-Item *ScenePublisherItem::doDuplicate() const
-{
-    return new ScenePublisherItem(*this);
-}
-
-void ScenePublisherItem::doPutProperties(PutPropertyFunction &putProperty)
+void ScenePublisher::doPutProperties(PutPropertyFunction &putProperty)
 {
     putProperty.decimals(2).min(0.0)(_("image publishing rate"),
                                      impl->publishingRate);
@@ -457,16 +469,17 @@ void ScenePublisherItem::doPutProperties(PutPropertyFunction &putProperty)
                                           impl->compressionLevel);
 }
 
-bool ScenePublisherItem::store(Archive &archive)
+bool ScenePublisher::store(Archive &archive)
 {
     archive.write("scene_publishing_rate", impl->publishingRate);
     archive.write("image_compression_level", impl->compressionLevel);
     return true;
 }
 
-bool ScenePublisherItem::restore(const Archive &archive)
+bool ScenePublisher::restore(const Archive &archive)
 {
     archive.read("scene_publishing_rate", impl->publishingRate);
     archive.read("image_compression_level", impl->compressionLevel);
     return true;
 }
+#endif

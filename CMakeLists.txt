@@ -13,6 +13,8 @@ find_package(geometry_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(tf2_eigen REQUIRED)
+find_package(image_transport REQUIRED)
+find_package(cv_bridge REQUIRED)
 find_package(choreonoid REQUIRED)
 
 if(CHOREONOID_CXX_STANDARD)
@@ -27,6 +29,7 @@ set(target CnoidAssemblerROSPlugin)
 choreonoid_add_plugin(${target}
   src/AssemblerROSPlugin.cpp
   src/AssemblerROSManager.cpp
+  src/ScenePublisher.cpp
   )
 
 ament_target_dependencies(${target} PUBLIC
@@ -35,6 +38,8 @@ ament_target_dependencies(${target} PUBLIC
   sensor_msgs
   tf2_ros
   tf2_eigen
+  cv_bridge
+  image_transport
   )
 #Choreonoid::CnoidBodyPlugin
 #Choreonoid::RobotAssemblerPlugin
