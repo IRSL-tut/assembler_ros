@@ -24,11 +24,11 @@ else()
   add_compile_options(-std=c++17)
 endif()
 
-set(target CnoidAssemblerROSPlugin)
-
+#set(target CnoidAssemblerROSPlugin)
+set(target CnoidVRROSPlugin)
 choreonoid_add_plugin(${target}
-  src/AssemblerROSPlugin.cpp
-  src/AssemblerROSManager.cpp
+  src/VRROSPlugin.cpp
+  src/VRROSManager.cpp
   src/ScenePublisher.cpp
   )
 
@@ -45,11 +45,11 @@ ament_target_dependencies(${target} PUBLIC
 #Choreonoid::RobotAssemblerPlugin
 #Choreonoid::RobotAssembler
 #Choreonoid::CnoidRobotAssemblerPlugin
-target_link_libraries(
-  ${target} PUBLIC
-  ${CHOREONOID_PLUGIN_DIR}/libCnoidRobotAssemblerPlugin.so
-  ${CHOREONOID_LIB_DIR}/libRobotAssembler.so
-  )
+#target_link_libraries(
+#  ${target} PUBLIC
+#  ${CHOREONOID_PLUGIN_DIR}/libCnoidRobotAssemblerPlugin.so
+#  ${CHOREONOID_LIB_DIR}/libRobotAssembler.so
+#  )
 
 #install(
 #  TARGETS ${target}

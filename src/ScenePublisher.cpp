@@ -99,6 +99,8 @@ class ScenePublisher::Impl : public rclcpp::Node
 public:
     ScenePublisher *self;
 
+    bool initialized;
+
     double publishingRate;
     int compressionLevel;
     double fov_;
@@ -380,7 +382,7 @@ ScenePublisher::Impl::Impl(ScenePublisher *self)
     publishingRate = 30.0;
     compressionLevel = 2;
 
-    initialize();
+    // initialize();
 }
 
 ScenePublisher::Impl::Impl(ScenePublisher *self, const Impl &org)
@@ -389,7 +391,7 @@ ScenePublisher::Impl::Impl(ScenePublisher *self, const Impl &org)
 {
     std::cerr << "Copied Impl" << std::endl;
     publishingRate = org.publishingRate;
-    initialize();
+    // initialize();
 }
 
 void ScenePublisher::Impl::initialize()
@@ -455,6 +457,29 @@ ScenePublisher::~ScenePublisher()
     delete impl;
 }
 
+void ScenePublisher::startROSNode()
+{
+    impl->initialize();
+}
+void ScenePublisher::setNodeName(const std::string &_name)
+{
+}
+void ScenePublisher::setFrequency(double _hz)
+{
+    impl->publishingRate = _hz;
+}
+void ScenePublisher::resetOffset()
+{
+    impl->hmd_offset = Isometry3::Identity();
+}
+Isometry3 &ScenePublisher::offset()
+{
+    return impl->hmd_offset;
+}
+void ScenePublisher::setOffset(const Isometry3 &_T)
+{
+    impl->hmd_offset = _T;
+}
 #if 0
 Item *ScenePublisher::doDuplicate() const
 {
